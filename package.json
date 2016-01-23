@@ -2,9 +2,9 @@
   "name": "github-poller",
   "version": "0.1.0",
   "description": "Service that turns +1, -1, :+1: and :-1: in github issues comments into poll results",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "./node_modules/.bin/jasmine"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
   "homepage": "https://github.com/bjdixon/github-poller#readme",
   "dependencies": {
     "hapi": "^12.1.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1"
   }
 }
