@@ -1,6 +1,6 @@
 'use strict';
 
-const server = require('../server.js').createServer(3000);
+const server = require('../server/server.js').createServer(3000);
 
 describe('Health Check', function () {
   it('responds with status code 200 and hello world text', function(done) {

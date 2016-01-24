@@ -1,6 +1,6 @@
 'use strict';
 
-const server = require('../server.js').createServer(3000);
+const server = require('../server/server.js').createServer(3000);
 
 describe('New Issue Comment Endpoint', function () {
 
