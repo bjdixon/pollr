@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/bjdixon/github-poller#readme",
   "dependencies": {
-    "hapi": "^12.1.0"
+    "hapi": "^12.1.0",
+    "octonode": "^0.7.4"
   },
   "devDependencies": {
     "jasmine": "^2.4.1"

@@ -2,9 +2,13 @@ function createServer(port) {
   'use strict';
 
   const Hapi = require('hapi');
+  const github = require('octonode');
+  const config = require('./config');
 
   const server = new Hapi.Server();
   server.connection({ port: port || 3000 });
+
+  const client = github.client(config.oauthToken);
 
   const hello = {
     method: 'GET',
@@ -19,10 +23,15 @@ function createServer(port) {
     path: '/new-issue',
     handler: function (req, reply) {
       if (req.payload.action === 'opened' && isPollIssue(req.payload)) {
-        let issueId = req.payload.issue.id;
+        let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
         // TODO send new issue comment with instructions on how to vote and as a placeholder for results of the poll
+        issue.comments(function (err, data, headers) {
+          console.log(data);
+        });
+        issue.createComment({ body: 'new poll' }, function (err, data, headers) {
+          reply('new poll');
+        });
         // TODO ultimately the sending of this comment should be handled by pushing to a message queue
-        reply('new poll');
         return;
       }
       reply('not new poll');
