@@ -10,14 +10,6 @@ function createServer(port) {
 
   const client = github.client(config.oauthToken);
 
-  const hello = {
-    method: 'GET',
-    path: '/{name}',
-    handler: function (req, reply) {
-      reply('hello ' +  encodeURIComponent(req.params.name));
-    }
-  };
-
   const newIssue = {
     method: 'POST',
     path: '/new-issue',
@@ -40,26 +32,26 @@ function createServer(port) {
     path: '/new-issue-comment',
     handler: function (req, reply) {
       if (isPollIssue(req.payload) && req.payload.comment) {
-        let issueId = req.payload.issue.id;
-        if (/\+1/.test(req.payload.comment.body)) {
-          reply('positive');
-          return;
-        }
-        if (/\-1/.test(req.payload.comment.body)) {
-          reply('negative');
-          return;
-        }
-        reply('neither');
+        reply(getCommentSentiment(req.payload.comment.body));
       }
     }
   };
+
+  function getCommentSentiment(commentBody) {
+    if (/\+1/.test(commentBody)) {
+      return 'positive';
+    }
+    if (/\-1/.test(commentBody)) {
+      return 'negative';
+    }
+    return 'neither';
+  }
 
   function isPollIssue(payload) {
     return payload.issue && /Poll:/.test(payload.issue.title);
   }
 
   server.route([
-    hello,
     newIssue,
     newIssueComment
   ]);
