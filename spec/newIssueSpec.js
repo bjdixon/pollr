@@ -4,7 +4,7 @@ const server = require('../server/server.js').createServer(3000);
 
 describe('New Issue Endpoint', function () {
 
-  it('responds with status code 200 and new poll when supplied a new poll issue', function(done) {
+  it('responds with status code 200 and new poll when supplied a new poll issue', function() {
     let options = {
       method: 'POST',
       url: '/new-issue',
@@ -13,11 +13,10 @@ describe('New Issue Endpoint', function () {
     server.inject(options, function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.result).toBe('new poll');
-      done();
     });
   });
 
-  it('responds with status code 200 and not new poll when not a new poll issue', function(done) {
+  it('responds with status code 200 and not new poll when not a new poll issue', function() {
     let options = {
       method: 'POST',
       url: '/new-issue',
@@ -26,7 +25,6 @@ describe('New Issue Endpoint', function () {
     server.inject(options, function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.result).toBe('not new poll');
-      done();
     });
   });
 });

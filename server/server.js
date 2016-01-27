@@ -9,6 +9,11 @@ function createServer(port) {
   server.connection({ port: port || 3000 });
 
   const client = github.client(config.oauthToken);
+  const me = client.me();
+  let myUsername;
+  me.info(function (err, data, headers) {
+    myUsername = data.login;
+  });
 
   const newIssue = {
     method: 'POST',
@@ -32,7 +37,10 @@ function createServer(port) {
     path: '/new-issue-comment',
     handler: function (req, reply) {
       if (isPollIssue(req.payload) && req.payload.comment) {
-        reply(getCommentSentiment(req.payload.comment.body));
+        let sentiment = getCommentSentiment(req.payload.comment.body);
+        reply(sentiment);
+        // TODO get the issue comment number of the comment we inserted when the poll was started
+        // and the total of positive/negative comments so we can update the original comment.
       }
     }
   };
