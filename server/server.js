@@ -4,6 +4,7 @@ function createServer(port) {
   const Hapi = require('hapi');
   const github = require('octonode');
   const config = require('./config');
+  const _ = require('underscore');
 
   const server = new Hapi.Server();
   server.connection({ port: port || 3000 });
@@ -37,10 +38,28 @@ function createServer(port) {
     path: '/new-issue-comment',
     handler: function (req, reply) {
       if (isPollIssue(req.payload) && req.payload.comment) {
-        let sentiment = getCommentSentiment(req.payload.comment.body);
-        reply(sentiment);
-        // TODO get the issue comment number of the comment we inserted when the poll was started
-        // and the total of positive/negative comments so we can update the original comment.
+        let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
+        let commentSentiment = getCommentSentiment(req.payload.comment.body);
+        issue.comments(function (err, data, headers) {
+          const pollSummary = _.findIndex(data, function (comment) {
+            return comment.user.login === 'pollr';
+          }) + 1;
+          const positiveCount = _.filter(data, function (comment) {
+            return getCommentSentiment(comment.body) === 'positive';
+          }).length;
+          const negativeCount = _.filter(data, function (comment) {
+            return getCommentSentiment(comment.body) === 'negative';
+          }).length;
+          let message = `positive: ${positiveCount}, negative: ${negativeCount}`;
+          issue.updateComment(pollSummary, {
+              body: message
+          }, function (err, data, headers) {
+            console.log('err: ', err);
+            console.log('data: ', data);
+            console.log('headers ', headers);
+            reply('this comment was ' + commentSentiment + '. ' + message);
+          });
+        });
       }
     }
   };

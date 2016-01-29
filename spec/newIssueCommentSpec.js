@@ -12,10 +12,10 @@ describe('New Issue Comment Endpoint', function () {
     };
     server.inject(options, function(response) {
       expect(response.statusCode).toBe(200);
-      expect(response.result).toBe('positive');
+      expect(response.result).toBe('this comment was positive. positive: 2, negative: 2');
       done();
     });
-  });
+  }, 15000);
  
   it('responds with status code 200 and negative when supplied a new negative poll issue comment', function(done) {
     let options = {
@@ -25,22 +25,8 @@ describe('New Issue Comment Endpoint', function () {
     };
     server.inject(options, function(response) {
       expect(response.statusCode).toBe(200);
-      expect(response.result).toBe('negative');
+      expect(response.result).toBe('this comment was negative. positive: 2, negative: 2');
       done();
     });
-  });
-  /* 
-  it('responds with status code 200 and neither when supplied a new poll issue comment that is neither negative or positive', function(done) {
-    let options = {
-      method: 'POST',
-      url: '/new-issue-comment',
-      payload: require('./fixtures/newIssueComment_noPoll')
-    };
-    server.inject(options, function(response) {
-      expect(response.statusCode).toBe(200);
-      expect(response.result).toBe('neither');
-      done();
-    });
-  });
-  */
+  }, 15000);
 });
