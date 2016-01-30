@@ -40,13 +40,16 @@ function createServer(port) {
         let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
         let commentSentiment = getCommentSentiment(req.payload.comment.body);
         issue.comments(function (err, data, headers) {
-          const pollSummary = _.findIndex(data, function (comment) {
+          const pollSummary = _.find(data, function (comment) {
             return comment.user.login === 'pollr';
-          }) + 1;
-          const positiveCount = _.filter(data, function (comment) {
+          }).id;
+          const filteredData = _.filter(data, function (comment) {
+            return comment.user.login !== 'pollr';
+          });
+          const positiveCount = _.filter(filteredData, function (comment) {
             return getCommentSentiment(comment.body) === 'positive';
           }).length;
-          const negativeCount = _.filter(data, function (comment) {
+          const negativeCount = _.filter(filteredData, function (comment) {
             return getCommentSentiment(comment.body) === 'negative';
           }).length;
           let message = `positive: ${positiveCount}, negative: ${negativeCount}`;
