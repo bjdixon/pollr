@@ -22,11 +22,10 @@ function createServer(port) {
     handler: function (req, reply) {
       if (req.payload.action === 'opened' && isPollIssue(req.payload)) {
         let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
-        // TODO send new issue comment with instructions on how to vote and as a placeholder for results of the poll
-        issue.createComment({ body: 'new poll' }, function (err, data, headers) {
-          reply('new poll');
-        });
         // TODO ultimately the sending of this comment should be handled by pushing to a message queue
+        issue.createComment(createComment(), function (err, data, headers) {
+          logAndReply(err, data, headers, reply, 'new poll');
+        });
         return;
       }
       reply('not new poll');
@@ -51,13 +50,8 @@ function createServer(port) {
             return getCommentSentiment(comment.body) === 'negative';
           }).length;
           let message = `positive: ${positiveCount}, negative: ${negativeCount}`;
-          issue.updateComment(pollSummary, {
-              body: message
-          }, function (err, data, headers) {
-            console.log('err: ', err);
-            console.log('data: ', data);
-            console.log('headers ', headers);
-            reply('this comment was ' + commentSentiment + '. ' + message);
+          issue.updateComment(pollSummary, createComment(message), function (err, data, headers) {
+            logAndReply(err, data, headers, reply, 'this comment was ' + commentSentiment + '. ' + message);
           });
         });
       }
@@ -76,6 +70,19 @@ function createServer(port) {
 
   function isPollIssue(payload) {
     return payload.issue && /Poll:/.test(payload.issue.title);
+  }
+
+  function createComment(append) {
+    let messageBody = 'This issue contains a poll. To vote for this issue add a comment containing the text "+1", ":+1:", "-1", or ":-1:"';
+    if (append) {
+      messageBody += append;
+    }
+    return { body: messageBody };
+  }
+
+  function logAndReply(err, data, headers, reply, message) {
+    // TODO add logging
+    reply(message);
   }
 
   server.route([
