@@ -16,6 +16,14 @@ function createServer(port) {
     myUsername = data.login;
   });
 
+  const createHooks = {
+    method: 'POST',
+    path: '/create-hooks',
+    handler: function (req, reply) {
+      reply('create hooks');
+    }
+  };
+
   const newIssue = {
     method: 'POST',
     path: '/new-issue',
@@ -90,7 +98,8 @@ function createServer(port) {
 
   server.route([
     newIssue,
-    newIssueComment
+    newIssueComment,
+    createHooks
   ]);
 
   return server;
