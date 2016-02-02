@@ -5,9 +5,24 @@ function createServer(port) {
   const github = require('octonode');
   const config = require('./config');
   const _ = require('underscore');
+  const swagger = require('hapi-swagger');
+  const inert = require('inert');
+  const vision = require('vision');
 
   const server = new Hapi.Server();
   server.connection({ port: port || 3000 });
+
+  server.register([
+    inert,
+    vision,
+    {
+      register: swagger
+    }], function (err) {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
 
   const client = github.client(config.oauthToken);
   const me = client.me();
@@ -19,6 +34,9 @@ function createServer(port) {
   const createHooks = {
     method: 'POST',
     path: '/create-hooks',
+    config: {
+      tags: ['api']
+    },
     handler: function (req, reply) {
       reply('create hooks');
     }
@@ -27,6 +45,9 @@ function createServer(port) {
   const newIssue = {
     method: 'POST',
     path: '/new-issue',
+    config: {
+      tags: ['api']
+    },
     handler: function (req, reply) {
       if (req.payload.action === 'opened' && isPollIssue(req.payload)) {
         let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
@@ -43,6 +64,9 @@ function createServer(port) {
   const newIssueComment = {
     method: 'POST',
     path: '/new-issue-comment',
+    config: {
+      tags: ['api']
+    },
     handler: function (req, reply) {
       if (isPollIssue(req.payload) && req.payload.comment) {
         let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
