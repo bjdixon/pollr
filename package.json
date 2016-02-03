@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/bjdixon/github-poller#readme",
   "dependencies": {
+    "good": "^6.4.0",
+    "good-console": "^5.3.0",
+    "good-file": "^5.1.1",
     "hapi": "^12.1.0",
     "hapi-swagger": "^3.3.0",
     "inert": "^3.2.0",

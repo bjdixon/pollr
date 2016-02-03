@@ -15,11 +15,24 @@ function createServer(port) {
   server.register([
     inert,
     vision,
+    swagger,
     {
-      register: swagger
-    }], function (err) {
+      register: require('good'),
+      options: {
+        reporters: [{
+          reporter: require('good-console'),
+          events: { log: '*', response: '*' }
+          }, {
+          reporter: require('good-file'),
+          events: { log: '*', response: '*' },
+          config: './log'
+          }
+        ]
+      }
+    }
+    ], function (err) {
       if (err) {
-        console.log(err);
+        server.log('Error', err);
       }
     }
   );
