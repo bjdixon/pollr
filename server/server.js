@@ -86,10 +86,10 @@ function createServer(port) {
         let commentSentiment = getCommentSentiment(req.payload.comment.body);
         issue.comments(function (err, data, headers) {
           const pollSummary = _.find(data, function (comment) {
-            return comment.user.login === 'pollr';
+            return comment.user.login === myUsername;
           }).id;
           const filteredData = _.filter(data, function (comment) {
-            return comment.user.login !== 'pollr';
+            return comment.user.login !== myUsername;
           });
           const positiveCount = _.filter(filteredData, function (comment) {
             return getCommentSentiment(comment.body) === 'positive';
