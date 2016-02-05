@@ -8,6 +8,7 @@ function createServer(port) {
   const swagger = require('hapi-swagger');
   const inert = require('inert');
   const vision = require('vision');
+  const messages = require('./messages').messages;
 
   const server = new Hapi.Server();
   server.connection({ port: port || 3000 });
@@ -51,7 +52,7 @@ function createServer(port) {
       tags: ['api']
     },
     handler: function (req, reply) {
-      reply('create hooks');
+      reply(messages.reply.createHooks);
     }
   };
 
@@ -66,7 +67,7 @@ function createServer(port) {
         let issue = client.issue(req.payload.repository.full_name, req.payload.issue.number);
         // TODO ultimately the sending of this comment should be handled by pushing to a message queue
         issue.createComment(createComment(), function (err, data, headers) {
-          logAndReply(err, data, headers, reply, 'new poll');
+          logAndReply(err, data, headers, reply, messages.reply.newPoll);
         });
         return;
       }
@@ -92,14 +93,14 @@ function createServer(port) {
             return comment.user.login !== myUsername;
           });
           const positiveCount = _.filter(filteredData, function (comment) {
-            return getCommentSentiment(comment.body) === 'positive';
+            return getCommentSentiment(comment.body) === messages.sentiment.positive;
           }).length;
           const negativeCount = _.filter(filteredData, function (comment) {
-            return getCommentSentiment(comment.body) === 'negative';
+            return getCommentSentiment(comment.body) === messages.sentiment.negative;
           }).length;
-          let message = `positive: ${positiveCount}, negative: ${negativeCount}`;
+          let message = messages.sentiment.summary(positiveCount, negativeCount);
           issue.updateComment(pollSummary, createComment(message), function (err, data, headers) {
-            logAndReply(err, data, headers, reply, 'this comment was ' + commentSentiment + '. ' + message);
+            logAndReply(err, data, headers, reply, messages.reply.newIssueComment(commentSentiment, message));
           });
         });
       }
@@ -108,12 +109,12 @@ function createServer(port) {
 
   function getCommentSentiment(commentBody) {
     if (/\+1/.test(commentBody)) {
-      return 'positive';
+      return messages.sentiment.positive;
     }
     if (/\-1/.test(commentBody)) {
-      return 'negative';
+      return messages.sentiment.negative;
     }
-    return 'neither';
+    return messages.sentiment.neither;
   }
 
   function isPollIssue(payload) {
@@ -121,7 +122,7 @@ function createServer(port) {
   }
 
   function createComment(append) {
-    let messageBody = 'This issue contains a poll. To vote for this issue add a comment containing the text "+1", ":+1:", "-1", or ":-1:"';
+    let messageBody = messages.reply.newPollBoilerplate;
     if (append) {
       messageBody += append;
     }
