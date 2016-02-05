@@ -3,7 +3,7 @@ function createServer(port) {
 
   const Hapi = require('hapi');
   const github = require('octonode');
-  const config = require('./config');
+  const secrets = require('./configs/secrets.json');
   const _ = require('underscore');
   const swagger = require('hapi-swagger');
   const inert = require('inert');
@@ -19,17 +19,7 @@ function createServer(port) {
     swagger,
     {
       register: require('good'),
-      options: {
-        reporters: [{
-          reporter: require('good-console'),
-          events: { log: '*', response: '*' }
-          }, {
-          reporter: require('good-file'),
-          events: { log: '*', response: '*' },
-          config: './log'
-          }
-        ]
-      }
+      options: require('./configs/good-options').goodOptions
     }
     ], function (err) {
       if (err) {
@@ -38,7 +28,7 @@ function createServer(port) {
     }
   );
 
-  const client = github.client(config.oauthToken);
+  const client = github.client(secrets.oauthToken);
   const me = client.me();
   let myUsername;
   me.info(function (err, data, headers) {
