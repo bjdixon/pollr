@@ -27,8 +27,8 @@
     "hapi": "^12.1.0",
     "hapi-swagger": "^3.3.0",
     "inert": "^3.2.0",
+    "lodash": "^4.2.1",
     "octonode": "^0.7.4",
-    "underscore": "^1.8.3",
     "vision": "^4.0.1"
   },
   "devDependencies": {
