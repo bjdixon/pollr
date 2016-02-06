@@ -1,4 +1,6 @@
 function messages() {
+  'use strict';
+
   const newIssueComment = function (commentSentiment, message) {
     return `this comment was ${commentSentiment}. ${message}`;
   };
