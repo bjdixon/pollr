@@ -10,13 +10,13 @@ function createServer(port) {
   server.connection({ port: port || 3000 });
 
   server.register([
-    inert,
-    vision,
-    swagger,
-    {
-      register: require('good'),
-      options: require('./configs/good-options').goodOptions
-    }
+      inert,
+      vision,
+      swagger,
+      {
+        register: require('good'),
+        options: require('./configs/good-options')
+      }
     ], function (err) {
       if (err) {
         server.log('Error', err);
@@ -30,5 +30,5 @@ function createServer(port) {
 }
 
 module.exports = {
-  createServer: createServer
+  createServer
 };
