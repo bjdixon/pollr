@@ -1,7 +1,7 @@
 function init() {
   'use strict';
 
-  const messages = require('./messages').messages;
+  const messages = require('./messages');
   const _ = require('lodash');
   const github = require('octonode');
   const secrets = require('./configs/secrets.json');
