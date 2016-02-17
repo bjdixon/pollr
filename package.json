@@ -4,7 +4,7 @@
   "description": "Service that turns +1, -1, :+1: and :-1: in github issues comments into poll results",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/jasmine"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,6 @@
     "vision": "^4.0.1"
   },
   "devDependencies": {
-    "jasmine": "^2.4.1"
+    "ava": "^0.11.0"
   }
 }
