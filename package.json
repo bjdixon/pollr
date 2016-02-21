@@ -4,7 +4,7 @@
   "description": "Service that turns +1, -1, :+1: and :-1: in github issues comments into poll results",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "node node_modules/.bin/jshint server/*.js test/*.js && node node_modules/.bin/jscs server/*.js test/*.js && node node_modules/.bin/ava"
   },
   "repository": {
     "type": "git",
