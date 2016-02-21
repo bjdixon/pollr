@@ -4,7 +4,6 @@ import test from 'ava';
 
 test.beforeEach(t => {
   t.context.server = require('../server/server').createServer(3000);
-  
 });
 
 test.afterEach(t => {
