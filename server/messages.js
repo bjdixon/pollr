@@ -5,7 +5,7 @@ function newIssueComment(commentSentiment, message) {
 }
 
 function sentimentSummary(positiveCount, negativeCount) {
- return `positive: ${positiveCount}, negative: ${negativeCount}`;
+  return `positive: ${positiveCount}, negative: ${negativeCount}`;
 }
 
 module.exports = {
